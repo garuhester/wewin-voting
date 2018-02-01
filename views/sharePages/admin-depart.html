@@ -1,0 +1,144 @@
+<div class="mdui-table-fluid">
+    <table class="mdui-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>事业部名称</th>
+                <th class="mdui-table-col-numeric">总票数</th>
+                <th class="mdui-table-col-numeric">操作</th>
+            </tr>
+        </thead>
+        <tbody id="tb">
+
+            <% 
+            for(var i=0;i<data.departments.length;i++){ 
+                var d = data.departments[i];
+                %>
+                <tr class="">
+                    <td>
+                        <%= i+1 %>
+                    </td>
+                    <td>
+                        <%= d.name %>
+                    </td>
+                    <td>
+                        <%= d.votes %>
+                    </td>
+                    <td>
+                        <button id="<%= d._id %>" class="mdui-btn mdui-color-blue-accent mdui-ripple" onclick="openDialog(this)">投票列表</button>
+                    </td>
+                </tr>
+                <% }%>
+                    <tr class="sum">
+                        <td></td>
+                        <td>
+                            全部
+                        </td>
+                        <td>
+                            <%= data.sum %>
+                        </td>
+                        <td></td>
+                    </tr>
+        </tbody>
+    </table>
+</div>
+<div class="mdui-fab-wrapper" id="fab" mdui-tooltip="{content: '添加'}" mdui-dialog="{target: '#content-dialog'}">
+    <button class="mdui-fab mdui-ripple mdui-color-pink-accent">
+        <i class="mdui-icon material-icons">add</i>
+        <i class="mdui-icon mdui-fab-opened material-icons">mode_edit</i>
+    </button>
+</div>
+<div class="mdui-dialog" id="content-dialog">
+    <div class="mdui-dialog-title">
+        请输入选手名称
+    </div>
+    <div class="mdui-dialog-content">
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <label class="mdui-textfield-label">名称</label>
+            <input class="mdui-textfield-input input-depart" type="text" />
+        </div>
+    </div>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" onclick="addDepart()" mdui-dialog-confirm>添加</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button>
+    </div>
+</div>
+<div class="mdui-dialog" id="list-dialog" style="overflow:auto">
+    <table class="mdui-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>投票人名称</th>
+                <th class="mdui-table-col-numeric">手机号</th>
+                <th class="mdui-table-col-numeric">职务</th>
+                <th class="mdui-table-col-numeric">所投票数</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-list"></tbody>
+    </table>
+</div>
+<script>
+    var inst = new mdui.Dialog('#list-dialog');
+    function openDialog(obj) {
+        $.ajax({
+            method: 'post',
+            url: '/getList',
+            data: {
+                dId: obj.id
+            },
+            success: function (data) {
+                console.log(data)
+                var html = "",typeName = "";
+                for (var i = 0; i < data.userList.length; i++) {
+                    var u = data.userList[i].userId;
+                    switch(u.type){
+                        case 0: typeName = "普通";
+                            break;
+                        case 1: typeName = "主管";
+                            break;
+                        case 2: typeName = "经理";
+                            break;
+                        case 3: typeName = "总经理";
+                            break;
+                        case 4: typeName = "副总";
+                            break;
+                    }
+                    html += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${u.name}</td>
+                        <td class="mdui-table-col-numeric">${u.phone}</td>
+                        <td class="mdui-table-col-numeric">${typeName}</td>
+                        <td class="mdui-table-col-numeric">${data.userList[i].number}</td>
+                    </tr>
+                    `;
+                }
+                $("#tbody-list").html(html);
+                inst.open();
+            }
+        })
+    }
+
+    function addDepart() {
+        var departName = $(".input-depart").val();
+        if (departName != "") {
+            $.ajax({
+                method: 'post',
+                url: "/addDepart",
+                data: {
+                    departName,
+                },
+                success: function (data) {
+                    document.getElementById("tb").innerHTML += `
+                            <tr class="">
+                                <td>${data.de.name}</td>
+                                <td>${data.de.votes}</td>
+                            </tr>`
+                        ;
+                    mdui.updateTables();
+                }
+            });
+        }
+    }
+
+</script>

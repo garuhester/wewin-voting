@@ -1,0 +1,52 @@
+<div class="mdui-table-fluid">
+    <table class="mdui-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>参与人名称</th>
+                <th class="mdui-table-col-numeric">手机号</th>
+                <th class="mdui-table-col-numeric">职务</th>
+                <th class="mdui-table-col-numeric">剩余票数</th>
+                <th class="mdui-table-col-numeric">创建时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% 
+            for(var i=0;i<data.users.length;i++){ 
+                var d = data.users[i];
+                %>
+                <tr class="">
+                    <td>
+                        <%= i+1 %>
+                    </td>
+                    <td>
+                        <%= d.name %>
+                    </td>
+                    <td>
+                        <%= d.phone %>
+                    </td>
+                    <td>
+                        <% if(d.type == 0){ %>
+                            普通(2票)
+                            <% }else if(d.type == 1){ %>
+                                主管(4票)
+                                <% }else if(d.type == 2){ %>
+                                    经理(6票)
+                                    <% }else if(d.type == 3){ %>
+                                        总经理(8票)
+                                        <% }else if(d.type == 4){ %>
+                                            副总(10票)
+                                            <% } %>
+
+                    </td>
+                    <td>
+                        <%= d.ticket %>
+                    </td>
+                    <td>
+                        <%= d.createTime %>
+                    </td>
+                </tr>
+                <% }%>
+        </tbody>
+    </table>
+</div>
