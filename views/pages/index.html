@@ -92,7 +92,8 @@
                     if (data.result == 0) {
                         mdui.alert("剩余票数不够");
                     } else if (data.result == 1) {
-                        mdui.alert("投票成功!", "投票结果", function () {
+                        var a = mdui.alert("投票成功!", "投票结果");
+                        a.$dialog[0].addEventListener('close.mdui.dialog', function () {
                             var n1 = parseInt($("span.votenum." + departId).text().trim());
                             n1 += voteNum;
                             $("span.votenum." + departId).text(n1);

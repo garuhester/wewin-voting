@@ -31,6 +31,9 @@
                 success: function (data) {
                     // myChart.hideLoading(); //隐藏加载动画
                     myChart.setOption({ //加载数据图表
+                        xAxis: {
+                            data: data.xAxisData,
+                        },
                         series: [{
                             data: data.seriesData
                         }]
