@@ -4,7 +4,6 @@ var User = require("../schemas/user");
 var doStart = function (req, res) {
     var name = req.body.name;
     var phone = req.body.phone;
-    var code = req.body.code;
     var success = { result: 1, name, phone, };
 
     User.find({ "phone": phone }, function (err, user) {

@@ -20,11 +20,11 @@
         <div class="code clearfix">
             <div class="left">
                 <div class="mdui-textfield mdui-textfield-floating-label">
-                    <input class="mdui-textfield-input input-code" type="text" placeholder="输入验证码" />
+                    <input class="mdui-textfield-input input-code" type="number" placeholder="输入验证码" />
                 </div>
             </div>
             <div class="right">
-                <button class="mdui-btn mdui-btn-block mdui-color-blue-accent mdui-ripple mdui-text-center">获取验证码</button>
+                <button class="mdui-btn mdui-btn-block mdui-color-blue-accent mdui-ripple mdui-text-center" onclick="getCode(this)">获取验证码</button>
             </div>
         </div>
         <div class="into">
@@ -32,18 +32,78 @@
         </div>
     </div>
     <script>
+        var smsCode = 0,
+            postResult = "";
+
+        var json = localStorage.getItem("wewin-voting");
+        json = JSON.parse(json);
+        if (json != null) {
+            $.ajax({
+                method: 'post',
+                url: '/intoVoting',
+                data: {
+                    name: json.name,
+                    phone: json.phone
+                },
+                success: function (data) {
+                    if (data.result == 1) {
+                        window.location.href = "/";
+                    }
+                }
+            });
+        }
+
         // intoVoting();
+        function getCode(obj) {
+            var phone = $(".input-phone").val();
+            if (phone != "") {
+                $.ajax({
+                    method: "post",
+                    url: "/getCode",
+                    data: {
+                        phone,
+                    },
+                    success: function (data) {
+                        smsCode = data.result;
+                        postResult = data.postResult;
+                        if (postResult == "发送成功") {
+                            snackbar("验证码发送成功", 3000);
+                            var time = 60;
+                            $(obj).attr("disabled", "disabled");
+                            $(obj).text("剩余" + time + "秒");
+                            time--;
+                            var codeTime = setInterval(function () {
+                                if (time >= 0) {
+                                    $(obj).text("剩余" + time + "秒");
+                                    time--;
+                                } else {
+                                    clearInterval(codeTime);
+                                    $(obj).removeAttr("disabled");
+                                    $(obj).text("获取验证码");
+                                }
+                            }, 1000);
+                        } else {
+                            snackbar("验证码发送失败", 3000);
+                        }
+                    }
+                });
+            } else {
+                snackbar("请输入手机号", 3000);
+            }
+        }
+
+        //进入投票
         function intoVoting() {
 
             var name = $(".input-name").val();
             var phone = $(".input-phone").val();
             var code = $(".input-code").val();
 
-            // name = "hlz";
-            // phone = "18696595777";
-            name = "asd";
-            phone = "15123890448";
-            code = "123456";
+            smsCode = 1234;
+            code = 1234;
+            postResult = "发送成功";
+            name = "hlz";
+            phone = "15111823732";
 
             if (name == "") {
                 snackbar("请输入姓名", 3000);
@@ -51,21 +111,26 @@
                 snackbar("请输入手机号", 3000);
             } else if (code == "") {
                 snackbar("请输入验证码", 3000);
-            } else {
+            } else if (postResult != "发送成功") {
+                snackbar("验证码发送失败", 3000);
+            } else if (code == smsCode && postResult == "发送成功") {
                 $.ajax({
                     method: 'post',
                     url: '/intoVoting',
                     data: {
                         name,
                         phone,
-                        code,
                     },
                     success: function (data) {
                         if (data.result == 1) {
+                            var json = { name, phone, };
+                            localStorage.setItem("wewin-voting", JSON.stringify(json));
                             window.location.href = "/";
                         }
                     }
                 });
+            } else {
+                snackbar("验证码错误", 3000);
             }
         }
     </script>

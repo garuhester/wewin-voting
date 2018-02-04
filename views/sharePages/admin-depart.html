@@ -129,13 +129,14 @@
                     departName,
                 },
                 success: function (data) {
-                    document.getElementById("tb").innerHTML += `
-                            <tr class="">
-                                <td>${data.de.name}</td>
-                                <td>${data.de.votes}</td>
-                            </tr>`
-                        ;
-                    mdui.updateTables();
+                    // document.getElementById("tb").innerHTML += `
+                    //         <tr class="">
+                    //             <td>${data.de.name}</td>
+                    //             <td>${data.de.votes}</td>
+                    //         </tr>`
+                    //     ;
+                    // mdui.updateTables();
+                    window.location.reload();
                 }
             });
         }

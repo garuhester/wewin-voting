@@ -1,6 +1,7 @@
 var start = require("./start");
 var home = require("./home");
 var admin = require("./admin");
+var yunpian = require("./yunpian");
 
 module.exports = function (app) {
     var departments = ["运营商事业部", "互联网事业部", "电力事业部", "医疗事业部", "交通事业部", "金融事业部"];
@@ -64,4 +65,6 @@ module.exports = function (app) {
     app.post("/getList", admin.getList);
 
     app.post("/getChartData", home.getChartData);
+
+    app.post("/getCode", yunpian.getCode);
 }
