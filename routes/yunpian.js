@@ -7,7 +7,6 @@ var sms_host = 'sms.yunpian.com';
 var tpl_id = 2175270;
 // 查询账户信息https地址
 var get_user_info_uri = '/v2/user/get.json';
-var postResult = "";
 
 var getCode = function (req, res) {
     // 修改为您要发送的手机号码，多个号码用逗号隔开
@@ -19,8 +18,9 @@ var getCode = function (req, res) {
     // 指定模板发送接口https地址
     send_tpl_sms_uri = '/v2/sms/tpl_single_send.json';
     // query_user_info(get_user_info_uri,apikey);
-    send_tpl_sms(send_tpl_sms_uri, apikey, mobile, tpl_id, tpl_value);
-    res.json({ result: random_code, postResult, });
+    send_tpl_sms(send_tpl_sms_uri, apikey, mobile, tpl_id, tpl_value, function (postResult) {
+        res.json({ result: random_code, postResult, });
+    });
 }
 
 function query_user_info(uri, apikey) {
@@ -30,7 +30,7 @@ function query_user_info(uri, apikey) {
     var content = qs.stringify(post_data);
     post(uri, content, sms_host);
 }
-function send_tpl_sms(uri, apikey, mobile, tpl_id, tpl_value) {
+function send_tpl_sms(uri, apikey, mobile, tpl_id, tpl_value, callback) {
     var post_data = {
         'apikey': apikey,
         'mobile': mobile,
@@ -38,9 +38,9 @@ function send_tpl_sms(uri, apikey, mobile, tpl_id, tpl_value) {
         'tpl_value': qs.stringify(tpl_value),
     };//这是需要提交的数据  
     var content = qs.stringify(post_data);
-    post(uri, content, sms_host);
+    post(uri, content, sms_host, callback);
 }
-function post(uri, content, host) {
+function post(uri, content, host, callback) {
     var options = {
         hostname: host,
         port: 443,
@@ -55,8 +55,9 @@ function post(uri, content, host) {
         // console.log('HEADERS: ' + JSON.stringify(res.headers));  
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
-            postResult = chunk.msg;
+            var json = JSON.parse(chunk);
             console.log('BODY: ' + chunk);
+            callback(json.msg);
         });
     });
     //console.log(content);

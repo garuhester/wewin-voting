@@ -99,11 +99,11 @@
             var phone = $(".input-phone").val();
             var code = $(".input-code").val();
 
-            smsCode = 1234;
-            code = 1234;
-            postResult = "发送成功";
-            name = "hlz";
-            phone = "15111823732";
+            // smsCode = 1234;
+            // code = 1234;
+            // postResult = "发送成功";
+            // name = "hlz";
+            // phone = "15111823732";
 
             if (name == "") {
                 snackbar("请输入姓名", 3000);
@@ -111,8 +111,6 @@
                 snackbar("请输入手机号", 3000);
             } else if (code == "") {
                 snackbar("请输入验证码", 3000);
-            } else if (postResult != "发送成功") {
-                snackbar("验证码发送失败", 3000);
             } else if (code == smsCode && postResult == "发送成功") {
                 $.ajax({
                     method: 'post',
