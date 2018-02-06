@@ -34,28 +34,32 @@
     <script>
         var smsCode = 0,
             postResult = "";
-
         var json = localStorage.getItem("wewin-voting");
         json = JSON.parse(json);
         if (json != null) {
-            $.ajax({
-                method: 'post',
-                url: '/intoVoting',
-                data: {
-                    name: json.name,
-                    phone: json.phone
-                },
-                success: function (data) {
-                    if (data.result == 1) {
-                        window.location.href = "/";
+            if(json.name && json.phone){
+                $.ajax({
+                    method: 'post',
+                    url: '/intoVoting',
+                    data: {
+                        name: json.name,
+                        phone: json.phone
+                    },
+                    success: function (data) {
+                        if (data.result == 1) {
+                            window.location.href = "/";
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                snackbar("出错", 3000);
+            }
         }
 
         // intoVoting();
         function getCode(obj) {
             var phone = $(".input-phone").val();
+            $(obj).attr("disabled", "disabled");
             if (phone != "") {
                 $.ajax({
                     method: "post",
@@ -68,8 +72,7 @@
                         postResult = data.postResult;
                         if (postResult == "发送成功") {
                             snackbar("验证码发送成功", 3000);
-                            var time = 60;
-                            $(obj).attr("disabled", "disabled");
+                            var time = 30;
                             $(obj).text("剩余" + time + "秒");
                             time--;
                             var codeTime = setInterval(function () {
@@ -83,6 +86,7 @@
                                 }
                             }, 1000);
                         } else {
+                            $(obj).removeAttr("disabled");
                             snackbar("验证码发送失败", 3000);
                         }
                     }

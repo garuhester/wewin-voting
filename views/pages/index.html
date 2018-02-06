@@ -38,16 +38,28 @@
                                         <select class="mdui-select <%= depart._id %>" mdui-select>
                                             <option value="1" selected>1票</option>
                                         </select>
-                                        <% }else{ %>
+                                        <% }else if(data.type == 0){ %>
                                             <select class="mdui-select <%= depart._id %>" mdui-select>
                                                 <option value="1">1票</option>
                                                 <option value="2">2票</option>
-                                                <option value="3">3票</option>
-                                                <option value="4">4票</option>
-                                                <option value="5">5票</option>
-                                                <option value="6">6票</option>
                                             </select>
-                                            <% } %>
+                                            <% }else if(data.type == 1){ %>
+                                                <select class="mdui-select <%= depart._id %>" mdui-select>
+                                                    <option value="1">1票</option>
+                                                    <option value="2">2票</option>
+                                                    <option value="3">3票</option>
+                                                    <option value="4">4票</option>
+                                                </select>
+                                                <% }else{ %>
+                                                    <select class="mdui-select <%= depart._id %>" mdui-select>
+                                                        <option value="1">1票</option>
+                                                        <option value="2">2票</option>
+                                                        <option value="3">3票</option>
+                                                        <option value="4">4票</option>
+                                                        <option value="5">5票</option>
+                                                        <option value="6">6票</option>
+                                                    </select>
+                                                    <% } %>
                                 </div>
                             </div>
                         </div>

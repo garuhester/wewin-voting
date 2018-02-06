@@ -1,10 +1,10 @@
 var https = require('https');
 var qs = require('querystring');
 
-var apikey = 'fcb492c004a75b530a6a9433e4035fe8';
+var apikey = 'b76387e9585a5e4214d85091c0fcb98b';
 var sms_host = 'sms.yunpian.com';
 // 指定发送的模板编号
-var tpl_id = 2175270;
+var tpl_id = 2178448;
 // 查询账户信息https地址
 var get_user_info_uri = '/v2/user/get.json';
 
@@ -17,18 +17,19 @@ var getCode = function (req, res) {
 
     // 指定模板发送接口https地址
     send_tpl_sms_uri = '/v2/sms/tpl_single_send.json';
-    // query_user_info(get_user_info_uri,apikey);
+    // query_user_info(get_user_info_uri, apikey, function () { });
+    // res.json({ result: 1 });
     send_tpl_sms(send_tpl_sms_uri, apikey, mobile, tpl_id, tpl_value, function (postResult) {
         res.json({ result: random_code, postResult, });
     });
 }
 
-function query_user_info(uri, apikey) {
+function query_user_info(uri, apikey, callback) {
     var post_data = {
         'apikey': apikey,
     };//这是需要提交的数据
     var content = qs.stringify(post_data);
-    post(uri, content, sms_host);
+    post(uri, content, sms_host, callback);
 }
 function send_tpl_sms(uri, apikey, mobile, tpl_id, tpl_value, callback) {
     var post_data = {
