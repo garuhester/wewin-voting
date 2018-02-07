@@ -1,5 +1,6 @@
 var https = require('https');
 var qs = require('querystring');
+var start = require("./start");
 
 var apikey = 'b76387e9585a5e4214d85091c0fcb98b';
 var sms_host = 'sms.yunpian.com';
@@ -11,17 +12,22 @@ var get_user_info_uri = '/v2/user/get.json';
 var getCode = function (req, res) {
     // 修改为您要发送的手机号码，多个号码用逗号隔开
     var mobile = req.body.phone;
-    // 指定发送模板的内容
-    var random_code = Math.floor(Math.random() * 9000) + 1000;
-    var tpl_value = { '#code#': random_code };
+    var types = start.isType(mobile);
+    if (types.type != -1) {
+        // 指定发送模板的内容
+        var random_code = Math.floor(Math.random() * 9000) + 1000;
+        var tpl_value = { '#code#': random_code };
 
-    // 指定模板发送接口https地址
-    send_tpl_sms_uri = '/v2/sms/tpl_single_send.json';
-    // query_user_info(get_user_info_uri, apikey, function () { });
-    // res.json({ result: 1 });
-    send_tpl_sms(send_tpl_sms_uri, apikey, mobile, tpl_id, tpl_value, function (postResult) {
-        res.json({ result: random_code, postResult, });
-    });
+        // 指定模板发送接口https地址
+        send_tpl_sms_uri = '/v2/sms/tpl_single_send.json';
+        // query_user_info(get_user_info_uri, apikey, function () { });
+        // res.json({ result: 1 });
+        send_tpl_sms(send_tpl_sms_uri, apikey, mobile, tpl_id, tpl_value, function (postResult) {
+            res.json({ result: random_code, postResult, });
+        });
+    } else {
+        res.json({ result: 0 });
+    }
 }
 
 function query_user_info(uri, apikey, callback) {

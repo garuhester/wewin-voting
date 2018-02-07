@@ -34,10 +34,10 @@
     <script>
         var smsCode = 0,
             postResult = "";
-        var json = localStorage.getItem("wewin-voting");
+        var json = localStorage.getItem("wewin-voting2");
         json = JSON.parse(json);
         if (json != null) {
-            if(json.name && json.phone){
+            if (json.name && json.phone) {
                 $.ajax({
                     method: 'post',
                     url: '/intoVoting',
@@ -51,16 +51,20 @@
                         }
                     }
                 });
-            }else{
+            } else {
                 snackbar("出错", 3000);
             }
         }
 
-        // intoVoting();
+        function testPhone(num) {
+            var reg = /^1[0-9]{10}$/;
+            return reg.test(num);
+        }
+
         function getCode(obj) {
             var phone = $(".input-phone").val();
-            $(obj).attr("disabled", "disabled");
-            if (phone != "") {
+            if (testPhone(phone)) {
+                $(obj).attr("disabled", "disabled");
                 $.ajax({
                     method: "post",
                     url: "/getCode",
@@ -68,31 +72,36 @@
                         phone,
                     },
                     success: function (data) {
-                        smsCode = data.result;
-                        postResult = data.postResult;
-                        if (postResult == "发送成功") {
-                            snackbar("验证码发送成功", 3000);
-                            var time = 30;
-                            $(obj).text("剩余" + time + "秒");
-                            time--;
-                            var codeTime = setInterval(function () {
-                                if (time >= 0) {
-                                    $(obj).text("剩余" + time + "秒");
-                                    time--;
-                                } else {
-                                    clearInterval(codeTime);
-                                    $(obj).removeAttr("disabled");
-                                    $(obj).text("获取验证码");
-                                }
-                            }, 1000);
-                        } else {
+                        if(data.result != 0){
+                            smsCode = data.result;
+                            postResult = data.postResult;
+                            if (postResult == "发送成功") {
+                                snackbar("验证码发送成功", 3000);
+                                var time = 30;
+                                $(obj).text("剩余" + time + "秒");
+                                time--;
+                                var codeTime = setInterval(function () {
+                                    if (time >= 0) {
+                                        $(obj).text("剩余" + time + "秒");
+                                        time--;
+                                    } else {
+                                        clearInterval(codeTime);
+                                        $(obj).removeAttr("disabled");
+                                        $(obj).text("获取验证码");
+                                    }
+                                }, 1000);
+                            } else {
+                                $(obj).removeAttr("disabled");
+                                snackbar("验证码发送失败", 3000);
+                            }
+                        }else{
                             $(obj).removeAttr("disabled");
-                            snackbar("验证码发送失败", 3000);
+                            mdui.alert("抱歉!您不在投票名单中哦", "消息");
                         }
                     }
                 });
             } else {
-                snackbar("请输入手机号", 3000);
+                snackbar("请输入正确的手机号", 3000);
             }
         }
 
@@ -103,36 +112,40 @@
             var phone = $(".input-phone").val();
             var code = $(".input-code").val();
 
-            // smsCode = 1234;
-            // code = 1234;
-            // postResult = "发送成功";
+            smsCode = 1234;
+            code = 1234;
+            postResult = "发送成功";
             // name = "hlz";
             // phone = "15111823732";
 
-            if (name == "") {
-                snackbar("请输入姓名", 3000);
-            } else if (phone == "") {
-                snackbar("请输入手机号", 3000);
-            } else if (code == "") {
-                snackbar("请输入验证码", 3000);
-            } else if (code == smsCode && postResult == "发送成功") {
-                $.ajax({
-                    method: 'post',
-                    url: '/intoVoting',
-                    data: {
-                        name,
-                        phone,
-                    },
-                    success: function (data) {
-                        if (data.result == 1) {
-                            var json = { name, phone, };
-                            localStorage.setItem("wewin-voting", JSON.stringify(json));
-                            window.location.href = "/";
+            if (testPhone(phone)) {
+                if (name == "") {
+                    snackbar("请输入姓名", 3000);
+                } else if (code == "") {
+                    snackbar("请输入验证码", 3000);
+                } else if (code == smsCode && postResult == "发送成功") {
+                    $.ajax({
+                        method: 'post',
+                        url: '/intoVoting',
+                        data: {
+                            name,
+                            phone,
+                        },
+                        success: function (data) {
+                            if (data.result == 1) {
+                                var json = { name, phone, };
+                                localStorage.setItem("wewin-voting2", JSON.stringify(json));
+                                window.location.href = "/";
+                            } else if (data.result == 0) {
+                                mdui.alert("抱歉!您不在投票名单中哦", "消息");
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    snackbar("验证码错误", 3000);
+                }
             } else {
-                snackbar("验证码错误", 3000);
+                snackbar("请输入正确的手机号", 3000);
             }
         }
     </script>

@@ -16,7 +16,7 @@
                         <div class="mdui-card-media">
                             <!-- <img class="mdui-img-fluid" src="/img/<%= i %>.png" /> -->
                             <div class="mdui-card-primary">
-                                <div class="mdui-card-primary-title">
+                                <div class="mdui-card-primary-title <%= depart._id %>">
                                     <%= depart.name %>
                                 </div>
                             </div>
@@ -92,34 +92,40 @@
         })
         function vote(obj) {
             var departId = obj.id;
+            var departName = $(".mdui-card-primary-title." + departId).text().trim();
             var voteNum = parseInt($("select.mdui-select." + departId).val());
-            $.ajax({
-                method: 'post',
-                url: '/vote',
-                data: {
-                    departId,
-                    voteNum,
-                },
-                success: function (data) {
-                    if (data.result == 0) {
-                        mdui.alert("剩余票数不够");
-                    } else if (data.result == 1) {
-                        var a = mdui.alert("投票成功!", "投票结果");
-                        a.$dialog[0].addEventListener('close.mdui.dialog', function () {
-                            var n1 = parseInt($("span.votenum." + departId).text().trim());
-                            n1 += voteNum;
-                            $("span.votenum." + departId).text(n1);
-                            var n2 = parseInt($("span.already." + departId).text().trim());
-                            n2 += voteNum;
-                            $("span.already." + departId).text(n2);
-                            var n3 = parseInt($("span.sur").text().trim());
-                            n3 -= voteNum;
-                            $("span.sur").text(n3);
-                            new beginChat().socket.send("hello voting");
-                        });
+            mdui.confirm('确定要投给 <span style="font-weight:bold">'+departName+voteNum+'票</span> ?', '消息', function () {
+                $.ajax({
+                    method: 'post',
+                    url: '/vote',
+                    data: {
+                        departId,
+                        voteNum,
+                    },
+                    success: function (data) {
+                        if (data.result == 0) {
+                            mdui.alert("剩余票数不够");
+                        } else if (data.result == 1) {
+                            var a = mdui.alert("投票成功!", "投票结果");
+                            a.$dialog[0].addEventListener('close.mdui.dialog', function () {
+                                var n1 = parseInt($("span.votenum." + departId).text().trim());
+                                n1 += voteNum;
+                                $("span.votenum." + departId).text(n1);
+                                var n2 = parseInt($("span.already." + departId).text().trim());
+                                n2 += voteNum;
+                                $("span.already." + departId).text(n2);
+                                var n3 = parseInt($("span.sur").text().trim());
+                                n3 -= voteNum;
+                                $("span.sur").text(n3);
+                                new beginChat().socket.send("hello voting");
+                            });
+                        }
                     }
-                }
-            })
+                });
+            },function(){},{
+                confirmText:"确定",
+                cancelText:"取消"
+            });
         }
         beginChat();
         function beginChat() {
