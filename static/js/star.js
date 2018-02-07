@@ -1,4 +1,4 @@
-//宇宙特效
+
 "use strict";
 var canvas = document.getElementById('canvas'),
     ctx = canvas.getContext('2d'),
@@ -7,7 +7,7 @@ var canvas = document.getElementById('canvas'),
 
     stars = [],
     count = 0,
-    maxStars = 400; //星星数量
+    maxStars = 300; //星星数量
 
 var canvas2 = document.createElement('canvas'),
     ctx2 = canvas2.getContext('2d');
@@ -85,18 +85,27 @@ for (var i = 0; i < maxStars; i++) {
     new Star();
 }
 
-function animation() {
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.globalAlpha = 0.5; //尾巴
-    // ctx.fillStyle = 'hsla(' + hue + ', 64%, 6%, 2)';
-    ctx.fillRect(0, 0, w, h)
+var img = new Image();
 
-    ctx.globalCompositeOperation = 'lighter';
-    for (var i = 1, l = stars.length; i < l; i++) {
-        stars[i].draw();
+function animation() {
+    //指定图片的URL
+    img.src = "/img/bg.jpg";
+    //浏览器加载图片完毕后再绘制图片
+    img.onload = function () {
+        //以Canvas画布上的坐标(10,10)为起始点，绘制图像
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 0.5; //尾巴
+
+        ctx.drawImage(img, 0, 0, w, h);
+
+        ctx.globalCompositeOperation = 'lighter';
+        for (var i = 1, l = stars.length; i < l; i++) {
+            stars[i].draw();
+        };
+
+        window.requestAnimationFrame(animation);
     };
 
-    window.requestAnimationFrame(animation);
 }
 
 animation();
