@@ -44,6 +44,34 @@ var getChartData = function (req, res) {
             if (type == 0) {
                 d.name = d.name.replace("事业部", "");
             }
+            if (type == 1) {
+                switch (d._id.toString()) {
+                    case "5a716cdce867901890a66d78":
+                        //电力
+                        d.name = "a";
+                        break;
+                    case "5a716d78901ec7197c1b5319":
+                        //医疗
+                        d.name = "b";
+                        break;
+                    case "5a716dca901ec7197c1b531a":
+                        //互联网
+                        d.name = "c";
+                        break;
+                    case "5a717391ac9cd835885c53b3":
+                        //交通
+                        d.name = "d";
+                        break;
+                    case "5a717385ac9cd835885c53b2":
+                        //运营
+                        d.name = "e";
+                        break;
+                    case "5a717396ac9cd835885c53b4":
+                        //金融
+                        d.name = "f";
+                        break;
+                }
+            }
             data.xAxisData.push(d.name);
             data.seriesData.push(d.votes);
         }

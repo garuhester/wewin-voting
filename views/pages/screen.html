@@ -21,6 +21,7 @@
             right: 30px;
             width: 17%;
         }
+
         #bg {
             position: fixed;
             width: 100%;
@@ -37,8 +38,8 @@
 <body>
     <div class="header" id="demo">
         <div class="canvaszz">
-            <img id="bg" src="/img/bg4.jpg" alt="">
-            <div id="main" style="height:95vh"></div>
+            <img id="bg" src="/img/bg.jpg" alt="">
+            <div id="main" style="height:100vh"></div>
         </div>
         <canvas id="canvas"></canvas>
     </div>
@@ -91,11 +92,67 @@
                             data: data.xAxisData,
                             axisLabel: {
                                 show: true,
-                                interval: 0,
-                                rotate: 0,
                                 fontSize: '20',
                                 color: "#fff",
-                                fontWeight: 'bolder'
+                                fontWeight: 'bolder',
+                                formatter: function (value) {
+                                    return '{' + value + '| }';
+                                },
+                                margin: 7,
+                                rich: {
+                                    value: {
+                                        lineHeight: 30,
+                                        align: 'center'
+                                    },
+                                    "a": {
+                                        width: 90,
+                                        height: 55,
+                                        align: 'center',
+                                        backgroundColor: {
+                                            image: '/img/dianli.png'
+                                        }
+                                    },
+                                    "b": {
+                                        width: 90,
+                                        height: 55,
+                                        align: 'center',
+                                        backgroundColor: {
+                                            image: '/img/yiliao.png'
+                                        }
+                                    },
+                                    "c": {
+                                        width: 100,
+                                        height: 50,
+                                        align: 'center',
+                                        backgroundColor: {
+                                            image: '/img/hulianwang.png'
+                                        }
+                                    },
+                                    "d": {
+                                        width: 90,
+                                        height: 55,
+                                        align: 'center',
+                                        backgroundColor: {
+                                            image: '/img/jiaotong.png'
+                                        }
+                                    },
+                                    "e": {
+                                        width: 90,
+                                        height: 55,
+                                        align: 'center',
+                                        backgroundColor: {
+                                            image: '/img/yunying.png'
+                                        }
+                                    },
+                                    "f": {
+                                        width: 90,
+                                        height: 55,
+                                        align: 'center',
+                                        backgroundColor: {
+                                            image: '/img/jinrong.png'
+                                        }
+                                    },
+                                }
                             },
                             axisLine: {
                                 symbolSize: [100, 100],
@@ -111,8 +168,9 @@
                         grid: {
                             left: '0%',
                             right: '0%',
-                            top: '30%',
-                            bottom: '8%'
+                            top: '33%',
+                            bottom: '15%',
+                            y2: 40
                         },
                         yAxis: {
                             show: false
@@ -141,27 +199,28 @@
                                 normal: {
                                     show: true,
                                     position: 'top',
-                                    color: "#fff",
                                     formatter: function (a) {
                                         var result = [], counter = 0, num = a.data;
                                         num = (num || 0).toString().split('');
                                         for (var i = num.length - 1; i >= 0; i--) {
                                             counter++;
                                             result.unshift(num[i]);
-                                            if (!(counter % 3) && i != 0) { result.unshift(','); }
+                                            if (!(counter % 3) && i != 0) {
+                                                result.unshift(',');
+                                            }
                                         }
                                         result.unshift("¥");
                                         result = result.join('');
                                         return result;
-                                    },  
+                                    },
                                     textStyle: {
                                         fontWeight: 'bolder',
-                                        fontSize: '20',
+                                        fontSize: '30',
                                         fontFamily: '微软雅黑',
-                                        color: "#fff"
-                                    },
+                                        color: "linear-gradient(to right, #fff 0%,#fff,100%)"
+                                    }
                                 }
-                            },
+                            }
                         }]
                     };
                     // 使用刚指定的配置项和数据显示图表。
